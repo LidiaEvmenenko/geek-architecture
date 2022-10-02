@@ -1,5 +1,7 @@
 package ru.geekbrains;
 
+import ru.geekbrains.domain.HttpRequest;
+import ru.geekbrains.domain.HttpResponse;
 import ru.geekbrains.logger.ConsoleLogger;
 import ru.geekbrains.logger.Logger;
 
@@ -11,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class RequestHandler implements Runnable{
-    private static final String WWW = "/Users/aleks/dev/geek-architecture-123/www";
+    private static final String WWW = "C:\\Java\\geek-architecture\\www";
 
     private static final Logger logger = new ConsoleLogger();
 
@@ -26,31 +28,35 @@ public class RequestHandler implements Runnable{
 
         List<String> request = socketService.readRequest();
 
-        // TODO use here implementation of interface RequestParser
-        String[] parts = request.get(0).split(" ");
+        RequestPars p = new RequestPars();
+        HttpRequest httpRequest = p.parse(request);
 
-        Path path = Paths.get(WWW, parts[1]);
+        Path path = Paths.get(WWW, httpRequest.getPath());
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setProtocol(httpRequest.getProtocol());
+        httpResponse.setContent("Content-Type: text/html; charset=utf-8");
+        ResponceSerialize responceSerialize = new ResponceSerialize();
         if (!Files.exists(path)) {
-            // TODO use implementation of interface ResponseSerializer
-            socketService.writeResponse(
-                    "HTTP/1.1 404 NOT_FOUND\n" +
-                            "Content-Type: text/html; charset=utf-8\n" +
-                            "\n",
-                    new StringReader("<h1>Файл не найден!</h1>\n")
-            );
+            httpResponse.setStatusCode(404);
+            httpResponse.setMessage("NOT_FOUND");
+            httpResponse.setBody("<h1>Файл не найден!</h1>");
+            socketService.writeResponse(responceSerialize.serialize(httpResponse));
             return;
         }
 
         try {
-            // TODO use implementation of interface ResponseSerializer
-            socketService.writeResponse("HTTP/1.1 200 OK\n" +
-                            "Content-Type: text/html; charset=utf-8\n" +
-                            "\n",
-                    Files.newBufferedReader(path));
+            httpResponse.setStatusCode(200);
+            httpResponse.setMessage("OK");
+            List<String> list = Files.readAllLines(path);
+            StringBuilder s = new StringBuilder();
+            for (int i = 0; i < list.size(); i++) {
+                s.append(list.get(i)).append("\n");
+            }
+            httpResponse.setBody(String.valueOf(s));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        socketService.writeResponse(responceSerialize.serialize(httpResponse));
         logger.info("Client disconnected!");
     }
 }
