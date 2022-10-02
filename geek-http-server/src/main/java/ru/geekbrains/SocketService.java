@@ -38,13 +38,10 @@ public class SocketService implements Closeable {
         }
     }
 
-    public void writeResponse(String headers, Reader reader) {
+    public void writeResponse(String headers) {
         try {
             PrintWriter output = new PrintWriter(socket.getOutputStream());
             output.print(headers);
-            if ( reader != null) {
-                reader.transferTo(output);
-            }
             output.flush();
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
