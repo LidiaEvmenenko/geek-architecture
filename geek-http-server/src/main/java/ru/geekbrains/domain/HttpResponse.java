@@ -7,54 +7,61 @@ public class HttpResponse {
     private String body;
     private String protocol;
 
-    public HttpResponse(int statusCode, String message, String content, String body,String protocol) {
-        this.statusCode = statusCode;
-        this.message = message;
-        this.content = content;
-        this.body = body;
-        this.protocol = protocol;
-    }
-
-    public HttpResponse() {
+    private HttpResponse() {
     }
 
     public int getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
-
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public String getBody() {
         return body;
     }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
     public String getContent() {
         return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public String getProtocol() {
         return protocol;
     }
+    public static HttpResponseBuilder createBuilder(){
+        return new HttpResponseBuilder();
+    }
 
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
+    public static class HttpResponseBuilder{
+        private final HttpResponse response;
+
+        private HttpResponseBuilder() {
+            this.response = new HttpResponse();
+        }
+
+        public HttpResponseBuilder withStatusCode(int statusCode){
+            this.response.statusCode = statusCode;
+            return this;
+        }
+        public HttpResponseBuilder withMessage(String message){
+            this.response.message = message;
+            return this;
+        }
+        public HttpResponseBuilder withContent(String content){
+            this.response.content = content;
+            return this;
+        }
+        public HttpResponseBuilder withProtocol(String protocol){
+            this.response.protocol = protocol;
+            return this;
+        }
+        public HttpResponseBuilder withBody(String body){
+            this.response.body = body;
+            return this;
+        }
+
+        public HttpResponse build(){
+            return this.response;
+        }
     }
 }
