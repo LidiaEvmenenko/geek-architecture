@@ -6,6 +6,7 @@ import java.util.Properties;
 public class ConfigFromFile implements Config{
     private final String wwwHome;
     private final int port;
+    private final String content;
 
     public ConfigFromFile(String fileName) {
         Properties prop = new Properties();
@@ -16,6 +17,7 @@ public class ConfigFromFile implements Config{
         }
         this.wwwHome = prop.getProperty("www.home");
         this.port = Integer.parseInt(prop.getProperty("port"));
+        this.content = prop.getProperty("content");
     }
     @Override
     public String getWWWHome() {
@@ -25,5 +27,9 @@ public class ConfigFromFile implements Config{
     @Override
     public int getPort() {
         return this.port;
+    }
+    @Override
+    public String getContent() {
+        return this.content;
     }
 }

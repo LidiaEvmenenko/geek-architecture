@@ -11,17 +11,36 @@ public class RequestPars implements RequestParser{
 
     @Override
     public HttpRequest parse(List<String> request) {
-        HttpRequest httpRequest = new HttpRequest();
+
         String[] parts = request.get(0).split(" ");
-        httpRequest.setMethod(parts[0]);
-        httpRequest.setPath(parts[1]);
+
         for (int i = 1; i < request.size(); i++) {
             String[] r = request.get(i).split(" ", 2);
             if (r.length > 1) { this.headers.put(r[0], r[1]);
             }else { this.headers.put(r[0], ""); }
         }
-        httpRequest.setHeaders(this.headers);
-        httpRequest.setProtocol(parts[2]);
+        HttpRequest httpRequest = HttpRequest.createBuilder()
+                .withMethod(parts[0])
+                .withPath(parts[1])
+                .withHeaders(this.headers)
+                .withProtocol(parts[2])
+                .build();
         return httpRequest;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
