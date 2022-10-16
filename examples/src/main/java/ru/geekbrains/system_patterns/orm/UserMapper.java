@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,5 +40,15 @@ public class UserMapper {
         }
         return Optional.empty();
     }
-
+    public void clearIdentityMapDelete(List<User> list){
+        for (User u : list) {
+            identityMap.remove(u.getId());
+        }
+    }
+    public void updateIdentityMap(List<User> list){
+        for (User u : list) {
+            User user = new User(u.getId(), u.getLogin(), u.getPassword());
+            identityMap.replace(u.getId(), user);
+        }
+    }
 }

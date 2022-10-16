@@ -30,6 +30,8 @@ public class UserRepository {
     }
     public void commitTransaction(){
         unitOfWork.commit();
-
+        mapper.updateIdentityMap(unitOfWork.getUpdateUsers());
+        mapper.clearIdentityMapDelete(unitOfWork.getDeleteUsers());
+        beginTransaction();
     }
 }
