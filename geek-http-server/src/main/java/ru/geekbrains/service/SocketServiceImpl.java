@@ -1,25 +1,28 @@
-package ru.geekbrains;
+package ru.geekbrains.service;
 
 import ru.geekbrains.logger.ConsoleLogger;
 import ru.geekbrains.logger.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SocketService implements Closeable {
+class SocketServiceImpl implements SocketService{
     private static final Logger logger = new ConsoleLogger();
 
     private final Socket socket;
 
-    private SocketService(Socket socket) {
+    SocketServiceImpl(Socket socket) {
         this.socket = socket;
     }
 
-    public static SocketService createSocketService(Socket socket){
-        return new SocketService(socket);
+    public Socket getSocket() {
+        return socket;
     }
 
     public List<String> readRequest() {
@@ -42,10 +45,14 @@ public class SocketService implements Closeable {
         }
     }
 
-    public void writeResponse(String headers) {
+    public void writeResponse(String headers){
         try {
+
             PrintWriter output = new PrintWriter(socket.getOutputStream());
+            System.out.println(headers);
+
             output.print(headers);
+
             output.flush();
         } catch (IOException ex) {
             throw new IllegalStateException(ex);

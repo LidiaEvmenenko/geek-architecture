@@ -1,22 +1,20 @@
 package ru.geekbrains.domain;
 
 public class HttpResponse {
-    private int statusCode;
-    private String message;
+
+    private ResponceCode statusCode;
     private String content;
     private String body;
     private String protocol;
 
+
     private HttpResponse() {
     }
 
-    public int getStatusCode() {
+    public ResponceCode getStatusCode() {
         return statusCode;
     }
 
-    public String getMessage() {
-        return message;
-    }
 
     public String getBody() {
         return body;
@@ -39,14 +37,7 @@ public class HttpResponse {
             this.response = new HttpResponse();
         }
 
-        public HttpResponseBuilder withStatusCode(int statusCode){
-            this.response.statusCode = statusCode;
-            return this;
-        }
-        public HttpResponseBuilder withMessage(String message){
-            this.response.message = message;
-            return this;
-        }
+
         public HttpResponseBuilder withContent(String content){
             this.response.content = content;
             return this;
@@ -57,6 +48,10 @@ public class HttpResponse {
         }
         public HttpResponseBuilder withBody(String body){
             this.response.body = body;
+            return this;
+        }
+        public HttpResponseBuilder withStatusCode(ResponceCode responceCode){
+            this.response.statusCode = responceCode;
             return this;
         }
 

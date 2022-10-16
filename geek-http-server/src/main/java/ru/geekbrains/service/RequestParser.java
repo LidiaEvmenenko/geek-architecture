@@ -1,4 +1,4 @@
-package ru.geekbrains;
+package ru.geekbrains.service;
 
 import ru.geekbrains.domain.HttpRequest;
 
