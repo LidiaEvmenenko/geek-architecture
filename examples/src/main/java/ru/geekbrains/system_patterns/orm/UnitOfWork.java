@@ -1,6 +1,8 @@
 package ru.geekbrains.system_patterns.orm;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ public class UnitOfWork {
     private final List<User> updateUsers = new ArrayList<>();
     private final List<User> deleteUsers = new ArrayList<>();
     private final Connection conn;
-
+    private PreparedStatement ps;
 
     public UnitOfWork(Connection conn) {
         this.conn = conn;
@@ -32,14 +34,48 @@ public class UnitOfWork {
     }
 
     private void delete() {
-
+        try {
+            for (User u : deleteUsers) {
+                ps = conn.prepareStatement("delete from users where id= ?;");
+                ps.setLong(1, u.getId());
+                ps.executeUpdate();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     private void update() {
-
+        try {
+            for (User u : updateUsers) {
+                ps = conn.prepareStatement("update users set login = ? , password = ? where id = ?;");
+                ps.setString(1, u.getLogin());
+                ps.setString(2, u.getPassword());
+                ps.setLong(3, u.getId());
+                ps.executeUpdate();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     private void insert() {
+        try {
+            for (User u : newUsers) {
+                ps = conn.prepareStatement("insert into users (login,password) values(?,?);");
+                ps.setString(1, u.getLogin());
+                ps.setString(2, u.getPassword());
+                ps.executeUpdate();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+    public List<User> getUpdateUsers() {
+        return updateUsers;
+    }
 
+    public List<User> getDeleteUsers() {
+        return deleteUsers;
     }
 }
