@@ -8,4 +8,5 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited
 public @interface Handler {
     int order();
+    String method();
 }

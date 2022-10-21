@@ -2,6 +2,7 @@ package ru.geekbrains;
 
 import ru.geekbrains.config.Config;
 import ru.geekbrains.config.ConfigFactory;
+import ru.geekbrains.handler.AnnotatedHandlerFactory;
 import ru.geekbrains.handler.MethodHandlerFactory;
 import ru.geekbrains.handler.RequestHandler;
 import ru.geekbrains.logger.ConsoleLogger;
@@ -31,7 +32,7 @@ public class HttpServer {
 
                         RequestParserFactory.createRequestParser(),
 
-                        MethodHandlerFactory.create(socketService,responceSerializer,config))).start();
+                        AnnotatedHandlerFactory.create(socketService,responceSerializer,config))).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
