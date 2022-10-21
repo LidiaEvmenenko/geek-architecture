@@ -10,7 +10,7 @@ import ru.geekbrains.service.SocketService;
 public abstract class MethodHandler {
     private final String method;
     private final MethodHandler next;
-    protected final SocketService socketService;
+    protected SocketService socketService;
     protected final ResponseSerializer responseSerializer;
     protected final Config config;
 
@@ -42,4 +42,7 @@ public abstract class MethodHandler {
     }
 
     protected abstract HttpResponse handleInternal(HttpRequest request);
+    public MethodHandler getNext() {
+        return next;
+    }
 }
