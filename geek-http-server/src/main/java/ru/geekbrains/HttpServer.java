@@ -3,7 +3,6 @@ package ru.geekbrains;
 import ru.geekbrains.config.Config;
 import ru.geekbrains.config.ConfigFactory;
 import ru.geekbrains.handler.AnnotatedHandlerFactory;
-import ru.geekbrains.handler.MethodHandlerFactory;
 import ru.geekbrains.handler.RequestHandler;
 import ru.geekbrains.logger.ConsoleLogger;
 import ru.geekbrains.logger.Logger;
@@ -27,12 +26,18 @@ public class HttpServer {
 
                 SocketService socketService = SocketServiceFactory.createSocketService(socket);
                 ResponseSerializer responceSerializer = ResponceSerializerFactory.createResponceSerializer();
+                if (AnnotatedHandlerFactory.getPrev() == null) {
                 new Thread(RequestHandler.createRequestHandler(
                          socketService,
-
                         RequestParserFactory.createRequestParser(),
-
                         AnnotatedHandlerFactory.create(socketService,responceSerializer,config))).start();
+                }else {
+                    AnnotatedHandlerFactory.setSocketService(socketService);
+                    new Thread(RequestHandler.createRequestHandler(
+                            socketService,
+                            RequestParserFactory.createRequestParser(),
+                            AnnotatedHandlerFactory.getPrev())).start();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

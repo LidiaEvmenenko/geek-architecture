@@ -12,6 +12,7 @@ import java.util.List;
 
 public class AnnotatedHandlerFactory {
     private static MethodHandler prev = null;
+    private static MethodHandler next = null;
 
     public static MethodHandler create(SocketService socketService,
                                        ResponseSerializer responseSerializer, Config config) {
@@ -38,5 +39,20 @@ public class AnnotatedHandlerFactory {
 
     private static String getMethod(Class<?> clazz) {
         return clazz.getAnnotation(Handler.class).method();
+    }
+    public static MethodHandler getPrev() {
+        return prev;
+    }
+    public static MethodHandler getMethodHandlerNext(){
+        return AnnotatedHandlerFactory.next.getNext();
+    }
+
+    public static void setSocketService(SocketService socketService) {
+        next = prev;
+        while (true) {
+            AnnotatedHandlerFactory.next.socketService = socketService;
+            next = AnnotatedHandlerFactory.next.getNext();
+            if (next == null) break;
+        }
     }
 }

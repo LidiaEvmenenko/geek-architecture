@@ -7,7 +7,7 @@ import ru.geekbrains.domain.HttpResponse;
 import ru.geekbrains.domain.ResponceCode;
 import ru.geekbrains.service.SocketService;
 
-@Handler(order = 3)
+@Handler(order = 3, method = "PUT")
 public class PutMethodHandler extends MethodHandler{
     public PutMethodHandler(String method, MethodHandler next, SocketService socketService,
                             ResponseSerializer responseSerializer, Config config) {
