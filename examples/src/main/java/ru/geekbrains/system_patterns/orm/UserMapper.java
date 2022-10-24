@@ -11,12 +11,14 @@ import java.util.Optional;
 
 public class UserMapper {
 
-    private PreparedStatement selectUser;
+    private PreparedStatement selectUserById;
+    private PreparedStatement selectUserByLogin;
     private final Map<Long, User> identityMap = new HashMap<>();
 
     public UserMapper(Connection conn) {
         try {
-            this.selectUser = conn.prepareStatement("select id,login,password from users where id= ?;");
+            this.selectUserById = conn.prepareStatement("select id,login,password from users where id= ?;");
+            this.selectUserByLogin = conn.prepareStatement("select id,login,password from users where login= ?;");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -28,11 +30,29 @@ public class UserMapper {
             return Optional.of(user);
         }
         try {
-            selectUser.setLong(1, id);
-            ResultSet rs = selectUser.executeQuery();
+            selectUserById.setLong(1, id);
+            ResultSet rs = selectUserById.executeQuery();
             if (rs.next()) {
                 user = new User(rs.getLong(1), rs.getString(2), rs.getString(3));
                 identityMap.put(id,user);
+                return Optional.of(user);
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        return Optional.empty();
+    }
+    public Optional<User> findLogin(long id,String login) {
+        User user = identityMap.get(id);
+        if (user != null){
+            return Optional.of(user);
+        }
+        try {
+            selectUserByLogin.setString(1, login);
+            ResultSet rs = selectUserByLogin.executeQuery();
+            if (rs.next()) {
+                user = new User(rs.getLong(1), rs.getString(2), rs.getString(3));
+                identityMap.put(user.getId(), user);
                 return Optional.of(user);
             }
         } catch (Exception e) {
