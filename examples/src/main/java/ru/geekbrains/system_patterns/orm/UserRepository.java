@@ -20,13 +20,28 @@ public class UserRepository {
         this.unitOfWork = new UnitOfWork(this.conn);
     }
     public void insert(User user){
+        Optional<User> userOptional = mapper.findLogin(user.getId(), user.getLogin());
+        if(userOptional.isEmpty()){
         unitOfWork.registerNew(user);
+        }else {
+            System.out.println("User is already exist");
+        }
     }
     public void update(User user){
-        unitOfWork.registerUpdate(user);
+        Optional<User> userOptional = mapper.findId(user.getId());
+        if(!userOptional.isEmpty()){
+           unitOfWork.registerUpdate(user);
+        }else {
+            System.out.println("User id is not found");
+        }
     }
     public void delete(User user){
+        Optional<User> userOptional = mapper.findId(user.getId());
+        if(!userOptional.isEmpty()){
         unitOfWork.registerDelete(user);
+        }else {
+            System.out.println("User id is not found");
+        }
     }
     public void commitTransaction(){
         unitOfWork.commit();
